@@ -28,9 +28,9 @@ void APawnTurret::CheckFireCondition()
 		return;
 	}
 
-	if (ReturnDistanceToPlayer() <= minDistanceToFire) 
+	if (ReturnDistanceToPlayer() <= minDistanceToFire && PlayerPawn->GetIsPlayerAlive()) 
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Fire!"));
+		Fire();
 	}
 }
 

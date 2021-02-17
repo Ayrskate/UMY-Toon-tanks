@@ -24,6 +24,7 @@ private:
 	UCameraComponent* camera;
 
 	APlayerController* playerControllerRef;
+	bool bIsPlayerAlive = true;
 
 	FVector moveDirection;
 	FQuat rotationDirection;
@@ -49,11 +50,21 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement variables")
 		float RotateSpeed = 250.0;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Shooting parameters")
+		int32 BulletsMag = 5;
+	UPROPERTY(EditAnywhere, Category = "Shooting parameters")
+		float BulletReloadTime = 1.5f;
+
+	virtual void HandleDestruction() override;
+
+	bool GetIsPlayerAlive();
+
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void HandleDestruction() override;
-	
+	virtual void Fire() override;
+
+	void Reload();
 };

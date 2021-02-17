@@ -5,6 +5,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 
+
 void APawnTank::CalculateMoveInput(float Value)
 {
 	moveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
@@ -44,9 +45,47 @@ void APawnTank::BeginPlay()
 	playerControllerRef = Cast<APlayerController>(GetController());
 }
 
+void APawnTank::Fire()
+{
+	if(BulletsMag > 0)
+	{
+		Super::Fire();
+		BulletsMag--;
+		if(BulletsMag <= 0)
+		{
+			FTimerHandle reloadMagHandle;
+			FTimerDelegate reloadMagDelegate = FTimerDelegate::CreateUObject(this,
+				&APawnTank::Reload);
+
+			GetWorld()->GetTimerManager().SetTimer(reloadMagHandle, reloadMagDelegate, BulletReloadTime, false);
+			UE_LOG(LogTemp, Warning, TEXT("Reloading!"));
+		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No more bullets!"));
+	}
+}
+
+void APawnTank::Reload()
+{
+	BulletsMag = 5;
+}
+
 void APawnTank::HandleDestruction()
 {
 	Super::HandleDestruction();
+	
+	bIsPlayerAlive = false;
+
+	SetActorHiddenInGame(true);
+	SetActorTickEnabled(false);
+
+}
+
+bool APawnTank::GetIsPlayerAlive()
+{
+	return bIsPlayerAlive;
 }
 
 // Called every frame

@@ -3,6 +3,10 @@
 
 #include "PawnBase.h"
 #include "Components/CapsuleComponent.h"
+#include "ProjectileBase.h"
+#include "ToonTanks/HealthComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Particles/ParticleSystemComponent.h"
 
 // Sets default values
 APawnBase::APawnBase()
@@ -21,6 +25,14 @@ APawnBase::APawnBase()
 
 	projectileSpawnPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Projectile spawn point"));
 	projectileSpawnPoint->SetupAttachment(turretMesh);
+
+	tankTrailEffectPoint = CreateDefaultSubobject<USceneComponent>(TEXT("Trail point"));
+	tankTrailEffectPoint->SetupAttachment(RootComponent);
+
+	tankTrailEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("trail effect"));
+	tankTrailEffect->SetupAttachment(tankTrailEffectPoint);
+
+	healthComponent = CreateDefaultSubobject<UHealthComponent>(TEXT("Health"));
 }
 
 void APawnBase::RotateTurret(FVector _lookAtTarget)
@@ -34,13 +46,16 @@ void APawnBase::RotateTurret(FVector _lookAtTarget)
 
 void APawnBase::Fire()
 {
-
+	if(projectileClass)
+	{
+		AProjectileBase* tempProjectile = GetWorld()->SpawnActor<AProjectileBase>(projectileClass, projectileSpawnPoint->GetComponentLocation(), projectileSpawnPoint->GetComponentRotation());
+		tempProjectile->SetOwner(this);
+	}
 }
 
 void APawnBase::HandleDestruction()
 {
-
+	UGameplayStatics::SpawnEmitterAtLocation(this, deathParticles,GetActorLocation());
+	UGameplayStatics::PlaySoundAtLocation(this, deathSound, GetActorLocation());
+	GetWorld()->GetFirstPlayerController()->ClientPlayCameraShake(deathShake);
 }
-
-
-

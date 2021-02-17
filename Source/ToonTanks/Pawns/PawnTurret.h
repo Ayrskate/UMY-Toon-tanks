@@ -32,9 +32,11 @@ public:
 	UPROPERTY(EditAnywhere, category = "Turret Parameters")
 		float minDistanceToFire = 700;
 
+	virtual void HandleDestruction() override;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void HandleDestruction() override;
+	
 };
