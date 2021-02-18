@@ -8,7 +8,14 @@
 
 void APawnTank::CalculateMoveInput(float Value)
 {
-	moveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
+	if(!turboActivated)
+	{
+		moveDirection = FVector(Value * MoveSpeed * GetWorld()->DeltaTimeSeconds, 0, 0);
+	}
+	else
+	{
+		moveDirection = FVector(Value * MoveSpeedTurbo * GetWorld()->DeltaTimeSeconds, 0, 0);
+	}
 }
 
 void APawnTank::CalculateRotateInput(float value)
@@ -35,6 +42,8 @@ APawnTank::APawnTank()
 
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	camera->SetupAttachment(springArm);
+
+	maxBulletsMag = BulletsMag;
 }
 
 // Called when the game starts or when spawned
@@ -43,6 +52,8 @@ void APawnTank::BeginPlay()
 	Super::BeginPlay();
 
 	playerControllerRef = Cast<APlayerController>(GetController());
+
+	maxBulletsMag = BulletsMag;
 }
 
 void APawnTank::Fire()
@@ -58,18 +69,14 @@ void APawnTank::Fire()
 				&APawnTank::Reload);
 
 			GetWorld()->GetTimerManager().SetTimer(reloadMagHandle, reloadMagDelegate, BulletReloadTime, false);
-			UE_LOG(LogTemp, Warning, TEXT("Reloading!"));
+			//UE_LOG(LogTemp, Warning, TEXT("Reloading!"));
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No more bullets!"));
 	}
 }
 
 void APawnTank::Reload()
 {
-	BulletsMag = 5;
+	BulletsMag = maxBulletsMag;
 }
 
 void APawnTank::HandleDestruction()
@@ -112,5 +119,17 @@ void APawnTank::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	PlayerInputComponent->BindAxis("MoveForward", this, &APawnTank::CalculateMoveInput);
 	PlayerInputComponent->BindAxis("Turn", this, &APawnTank::CalculateRotateInput);
 	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &APawnTank::Fire);
+	PlayerInputComponent->BindAction("Turbo", IE_Pressed, this, &APawnTank::ActivateTurbo);
+	PlayerInputComponent->BindAction("Turbo", IE_Released, this, &APawnTank::DectivateTurbo);
+}
+
+void APawnTank::ActivateTurbo()
+{
+	turboActivated = true;
+}
+
+void APawnTank::DectivateTurbo()
+{
+	turboActivated = false;
 }
 

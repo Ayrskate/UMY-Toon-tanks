@@ -35,6 +35,8 @@ private:
 	void Move();
 	void Rotate();
 
+	int32 maxBulletsMag = 15;
+
 
 public:
 	APawnTank();
@@ -48,9 +50,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Movement variables")
 		float MoveSpeed = 380.0f;
 	UPROPERTY(EditAnywhere, Category = "Movement variables")
-		float RotateSpeed = 250.0;
+		float MoveSpeedTurbo = 650.0f;
+	UPROPERTY(EditAnywhere, Category = "Movement variables")
+		float RotateSpeed = 250.0f;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Shooting parameters")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Shooting parameters")
 		int32 BulletsMag = 5;
 	UPROPERTY(EditAnywhere, Category = "Shooting parameters")
 		float BulletReloadTime = 1.5f;
@@ -58,6 +62,8 @@ public:
 	virtual void HandleDestruction() override;
 
 	bool GetIsPlayerAlive();
+
+	bool turboActivated = false;
 
 
 protected:
@@ -67,4 +73,7 @@ protected:
 	virtual void Fire() override;
 
 	void Reload();
+
+	void ActivateTurbo();
+	void DectivateTurbo();
 };

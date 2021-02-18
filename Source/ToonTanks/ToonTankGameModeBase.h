@@ -20,8 +20,9 @@ class TOONTANKS_API AToonTankGameModeBase : public AGameModeBase
 	
 private:
 	APawnTank* PlayerTank;
-	int32 TargetTurrets = 0;
+	
 	APlayerControllerBase* PlayerControllerRef;
+	FTimerHandle gameTimeHandle;
 
 	int32 GetTargetTurretCount();
 	void HandleGameOver(bool playerWon);
@@ -30,6 +31,13 @@ private:
 public:
 
 	void ActorDied(AActor* deadActor);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Time")
+		float InitialDefaultTime = 15;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game Time")
+		float CurrentTime = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turrets left")
+		int32 TargetTurrets = 0;
 
 protected:
 
@@ -41,4 +49,6 @@ protected:
 	void GameStart();
 	UFUNCTION(BlueprintImplementableEvent)
 	void GameOver(bool playerWon);
+
+	void GameTimer();
 };
