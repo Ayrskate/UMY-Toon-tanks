@@ -12,6 +12,7 @@ void AToonTankGameModeBase::BeginPlay()
 	HandleGameStart();
 	CurrentTime = InitialDefaultTime;
 	GetWorld()->GetTimerManager().SetTimer(gameTimeHandle, this, &AToonTankGameModeBase::GameTimer, 1, true);
+	gameFinished = false;
 }
 
 void AToonTankGameModeBase::GameTimer()
@@ -80,7 +81,11 @@ int32 AToonTankGameModeBase::GetTargetTurretCount()
 
 void AToonTankGameModeBase::HandleGameOver(bool playerWon)
 {
-	GameOver(playerWon);
+	if(!gameFinished)
+	{
+		gameFinished = true;
+		GameOver(playerWon);
+	}
 }
 
 

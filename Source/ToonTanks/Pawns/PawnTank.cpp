@@ -105,7 +105,9 @@ void APawnTank::Tick(float DeltaTime)
 	if(playerControllerRef)
 	{
 		FHitResult traceHitResult;
-		playerControllerRef->GetHitResultUnderCursor(ECC_Visibility, false, traceHitResult);
+		TArray<TEnumAsByte<EObjectTypeQuery>> objects;
+		objects.Add(EObjectTypeQuery::ObjectTypeQuery7);
+		playerControllerRef->GetHitResultUnderCursorForObjects(objects, false, traceHitResult);
 		FVector hitLocation = traceHitResult.ImpactPoint;
 
 		RotateTurret(hitLocation);

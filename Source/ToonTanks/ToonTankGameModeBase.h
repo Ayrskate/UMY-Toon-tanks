@@ -24,6 +24,7 @@ private:
 	APlayerControllerBase* PlayerControllerRef;
 	FTimerHandle gameTimeHandle;
 
+	bool gameFinished = false;
 	int32 GetTargetTurretCount();
 	void HandleGameOver(bool playerWon);
 	void HandleGameStart();
